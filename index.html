@@ -1,209 +1,265 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InvoiceAI - Smart Invoice Management</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>InvoiceAI Pro</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#f5f6fb;color:#18213b}
-header{background:#fff;padding:20px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee}
-.logo{font-size:23px;font-weight:800;color:#5546d9}
-.logo span{color:#18213b}
-nav{display:flex;gap:20px;align-items:center}
-nav a{text-decoration:none;color:#596078;font-size:14px}
-.container{max-width:1100px;margin:35px auto;padding:0 20px}
-h1{font-size:28px;margin-bottom:8px}
-.subtitle{color:#81889b;margin-bottom:28px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;gap:12px;flex-wrap:wrap}
-button{background:#5948dc;color:white;border:0;padding:12px 18px;border-radius:9px;font-weight:bold;cursor:pointer}
+*{box-sizing:border-box}
+body{margin:0;background:#f5f6fc;color:#20243a;font-family:Arial,sans-serif}
+header{background:white;padding:20px 5%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee}
+.logo{font-size:24px;font-weight:bold;color:#6555df}
+.logo span{color:#20243a}
+button{border:0;border-radius:9px;padding:11px 15px;cursor:pointer;font-weight:bold}
+.primary{background:#6555df;color:white}
+.secondary{background:#eeeaff;color:#6555df}
+.danger{background:#ffeded;color:#c44}
+main{max-width:1100px;margin:35px auto;padding:0 18px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:25px}
+h1{font-size:28px;margin:0}
+.sub{color:#9299aa;font-size:13px;margin-top:7px}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
-.card{background:white;padding:22px;border-radius:13px;border:1px solid #ececf3}
-.card p{color:#858b9e;font-size:13px;margin-bottom:13px}
-.card strong{font-size:25px}
-.green{color:#16a36a;font-size:12px;margin-top:8px}
-.section{background:white;border:1px solid #ececf3;border-radius:13px;margin-top:25px;padding:22px;overflow:hidden}
-.section h2{font-size:19px;margin-bottom:18px}
+.card,.panel{background:white;border:1px solid #eceef5;border-radius:14px;padding:20px}
+.label{font-size:13px;color:#858da0}
+.value{font-size:25px;font-weight:bold;margin-top:13px}
+.green{color:#169968}.orange{color:#d18b25}.red{color:#d34d59}
+.panel{margin-top:22px}
+.paneltop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+h2{font-size:17px;margin:0}
 .tools{display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap}
-input,select{padding:11px;border:1px solid #e1e2eb;border-radius:8px;background:white;max-width:100%}
-table{width:100%;border-collapse:collapse;text-align:left;min-width:600px}
-th,td{padding:15px 10px;border-bottom:1px solid #eee;font-size:13px}
-th{color:#8990a3}
-.status{padding:6px 9px;border-radius:20px;font-size:11px;font-weight:bold}
-.paid{background:#e4f8ed;color:#13834e}
-.pending{background:#fff4dc;color:#a16a0b}
-.late{background:#ffe9e9;color:#c33d3d}
-footer{text-align:center;color:#9298a8;padding:30px;font-size:12px}
-#notice{margin-top:12px;color:#16845b;font-size:13px}
-@media(max-width:700px){
-nav a{display:none}
-.cards{grid-template-columns:repeat(2,1fr)}
-.container{margin-top:25px}
-.card{padding:15px}
-.card strong{font-size:21px}
-header{padding:17px 5%}
-}
-@media(max-width:380px){.cards{grid-template-columns:1fr}}
+input,select{padding:11px;border:1px solid #e0e4ed;border-radius:8px;background:white;max-width:100%}
+#search{flex:1;min-width:170px}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th,td{text-align:left;padding:14px 10px;border-bottom:1px solid #edf0f5;font-size:12px}
+th{color:#9299aa}
+.tablewrap{overflow-x:auto}
+.status{padding:6px 9px;border-radius:20px;font-size:10px;font-weight:bold}
+.paid{background:#e3f7ed;color:#168453}
+.pending{background:#fff3dc;color:#ad751b}
+.overdue{background:#ffe8e8;color:#c3424d}
+.action{background:#eeeaff;color:#6555df;padding:7px;font-size:10px}
+.chart{height:150px;display:flex;align-items:flex-end;gap:18px;border-bottom:1px solid #eee;padding:10px 10px 0}
+.barGroup{height:100%;flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:7px}
+.bar{width:45px;max-width:80%;border-radius:6px 6px 0 0;min-height:3px}
+.barLabel{font-size:11px;color:#888}
+.modalbg{display:none;position:fixed;inset:0;background:#11182b99;align-items:center;justify-content:center;padding:15px}
+.modal{background:white;padding:24px;border-radius:15px;width:100%;max-width:410px}
+.modal h2{margin-bottom:8px}
+.modal p{font-size:12px;color:#8991a5;margin-bottom:20px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:bold;margin-bottom:7px}
+.field input{width:100%}
+.modalactions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.empty{text-align:center;color:#999;padding:25px}
+footer{text-align:center;color:#999;font-size:11px;padding:25px}
+@media(max-width:750px){.cards{grid-template-columns:repeat(2,1fr)}main{margin-top:22px;padding:0 12px}.card{padding:15px}.value{font-size:21px}header{padding:17px}.panel{padding:14px}}
+@media(max-width:390px){.cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+
 <header>
 <div class="logo">Invoice<span>AI.</span></div>
-<nav>
-<a href="#">Dashboard</a>
-<a href="#invoices">Invoices</a>
-<a href="#reports">Reports</a>
-<button onclick="document.getElementById('file').click()">+ Upload</button>
-</nav>
+<button class="primary" onclick="openModal()">+ New invoice</button>
 </header>
 
-<main class="container">
+<main>
 <div class="top">
 <div>
 <h1>Dashboard</h1>
-<p class="subtitle">Welcome back! Here's your invoice overview.</p>
+<p class="sub">Your business overview at a glance.</p>
 </div>
-<button onclick="document.getElementById('file').click()">+ Add invoice</button>
-<input id="file" type="file" accept=".pdf,.png,.jpg,.jpeg" hidden onchange="uploadFile(this)">
-</div>
-
-<div class="cards">
-<div class="card"><p>Total invoices</p><strong id="total">128</strong><div class="green">All invoices</div></div>
-<div class="card"><p>Total paid</p><strong>€24,850</strong><div class="green">Payments received</div></div>
-<div class="card"><p>Pending</p><strong id="pending">€4,200</strong><div class="green">Awaiting payment</div></div>
-<div class="card"><p>Overdue</p><strong>€1,350</strong><div style="color:#c33d3d;font-size:12px;margin-top:8px">Needs attention</div></div>
+<button class="primary" onclick="openModal()">+ Add invoice</button>
 </div>
 
-<div class="section" id="invoices">
-<h2>Recent invoices</h2>
+<section class="cards">
+<div class="card"><div class="label">Total invoices</div><div class="value" id="total">0</div></div>
+<div class="card"><div class="label">Total paid</div><div class="value green" id="paid">€0</div></div>
+<div class="card"><div class="label">Pending</div><div class="value orange" id="pending">€0</div></div>
+<div class="card"><div class="label">Overdue</div><div class="value red" id="overdue">€0</div></div>
+</section>
+
+<section class="panel">
+<div class="paneltop"><div><h2>Invoice overview</h2><p class="sub">Amounts by payment status</p></div></div>
+<div class="chart" id="chart"></div>
+</section>
+
+<section class="panel">
+<div class="paneltop">
+<div><h2>Invoices</h2><p class="sub">Manage your invoices</p></div>
+<button class="secondary" onclick="openModal()">+ Add invoice</button>
+</div>
 <div class="tools">
-<input id="search" placeholder="Search invoices..." oninput="filterInvoices()">
-<select id="filter" onchange="filterInvoices()">
+<input id="search" placeholder="Search invoices..." oninput="render()">
+<select id="filter" onchange="render()">
 <option value="all">All statuses</option>
 <option value="Paid">Paid</option>
 <option value="Pending">Pending</option>
 <option value="Overdue">Overdue</option>
 </select>
 </div>
-<div style="overflow-x:auto">
+<div class="tablewrap">
 <table>
-<thead><tr><th>Invoice</th><th>Customer</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
-<tbody id="rows">
-<tr><td>#INV-001</td><td>Acme Studio</td><td>Nov 10, 2026</td><td>€850</td><td><span class="status paid">Paid</span></td></tr>
-<tr><td>#INV-002</td><td>Bright Media</td><td>Nov 12, 2026</td><td>€1,200</td><td><span class="status pending">Pending</span></td></tr>
-<tr><td>#INV-003</td><td>Nova Design</td><td>Oct 28, 2026</td><td>€650</td><td><span class="status late">Overdue</span></td></tr>
-<tr><td>#INV-004</td><td>Pixel Works</td><td>Nov 15, 2026</td><td>€950</td><td><span class="status paid">Paid</span></td></tr>
-</tbody>
+<thead><tr><th>Invoice</th><th>Customer</th><th>Date</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+<tbody id="rows"></tbody>
 </table>
 </div>
-<p id="notice"></p>
-</div>
-
-<div class="section" id="reports">
-<h2>Payment reminders</h2>
-<p style="color:#81889b;font-size:14px;margin-bottom:15px">Keep track of invoices that need attention.</p>
-<button onclick="alert('Reminder prepared! Connect an email service to send it.')">Prepare payment reminder</button>
-</div>
+</section>
 </main>
-<footer>© 2026 InvoiceAI. Smart invoice management.</footer>
+
+<footer>InvoiceAI Pro · Smart invoice management</footer>
+
+<div class="modalbg" id="modal">
+<form class="modal" id="form">
+<h2>New invoice</h2>
+<p>Enter the invoice information.</p>
+<div class="field">
+<label for="customer">Customer name</label>
+<input id="customer" maxlength="80" required placeholder="Company name">
+</div>
+<div class="field">
+<label for="amount">Amount (€)</label>
+<input id="amount" type="number" min="0.01" step="0.01" required placeholder="250">
+</div>
+<div class="field">
+<label for="due">Due date</label>
+<input id="due" type="date" required>
+</div>
+<div class="modalactions">
+<button type="button" class="secondary" onclick="closeModal()">Cancel</button>
+<button type="submit" class="primary">Save invoice</button>
+</div>
+</form>
+</div>
 
 <script>
-const storageKey = "invoiceai_invoices";
+const KEY="invoiceai_pro_data";
+const examples=[
+{id:"INV-001",customer:"Acme Studio",date:"2026-11-10",amount:850,due:"2026-11-20",status:"Paid"},
+{id:"INV-002",customer:"Bright Media",date:"2026-11-12",amount:1200,due:"2026-11-25",status:"Pending"},
+{id:"INV-003",customer:"Nova Design",date:"2026-10-28",amount:650,due:"2026-11-10",status:"Overdue"},
+{id:"INV-004",customer:"Pixel Works",date:"2026-11-15",amount:950,due:"2026-11-30",status:"Paid"}
+];
 
-let savedInvoices = JSON.parse(
-  localStorage.getItem(storageKey) || "[]"
+let invoices;
+try{
+const saved=localStorage.getItem(KEY);
+invoices=saved===null?examples:JSON.parse(saved);
+if(!Array.isArray(invoices))invoices=examples;
+}catch(error){invoices=examples;}
+
+function money(n){
+return new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR"}).format(n);
+}
+function save(){
+try{localStorage.setItem(KEY,JSON.stringify(invoices));}
+catch(error){alert("Could not save data in this browser.");}
+}
+function openModal(){
+document.getElementById("modal").style.display="flex";
+}
+function closeModal(){
+document.getElementById("modal").style.display="none";
+document.getElementById("form").reset();
+}
+function safe(text){
+return String(text).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function render(){
+const today=new Date().toISOString().slice(0,10);
+invoices.forEach(inv=>{
+if(inv.status!=="Paid"){
+inv.status=inv.due && inv.due<today?"Overdue":"Pending";
+}
+});
+const sum=status=>invoices.filter(x=>x.status===status).reduce((a,x)=>a+Number(x.amount||0),0);
+const paid=sum("Paid"),pending=sum("Pending"),overdue=sum("Overdue");
+document.getElementById("total").textContent=invoices.length;
+document.getElementById("paid").textContent=money(paid);
+document.getElementById("pending").textContent=money(pending);
+document.getElementById("overdue").textContent=money(overdue);
+
+const max=Math.max(paid,pending,overdue,1);
+const chart=document.getElementById("chart");
+chart.innerHTML="";
+[
+{label:"Paid",value:paid,color:"#169968"},
+{label:"Pending",value:pending,color:"#d18b25"},
+{label:"Overdue",value:overdue,color:"#d34d59"}
+].forEach(item=>{
+const group=document.createElement("div");
+group.className="barGroup";
+const bar=document.createElement("div");
+bar.className="bar";
+bar.style.height=Math.max(3,item.value/max*100)+"%";
+bar.style.background=item.color;
+bar.title=item.label+": "+money(item.value);
+const label=document.createElement("span");
+label.className="barLabel";
+label.textContent=item.label;
+group.append(bar,label);
+chart.appendChild(group);
+});
+
+const query=document.getElementById("search").value.toLowerCase();
+const filter=document.getElementById("filter").value;
+const filtered=invoices.filter(inv=>
+(inv.customer+" "+inv.id).toLowerCase().includes(query)&&
+(filter==="all"||inv.status===filter)
 );
-
-function filterInvoices() {
-  const q = document.getElementById("search").value.toLowerCase();
-  const f = document.getElementById("filter").value;
-
-  document.querySelectorAll("#rows tr").forEach(row => {
-    const matches = row.innerText.toLowerCase().includes(q);
-    const status = row.cells[4].innerText;
-
-    row.style.display =
-      matches && (f === "all" || status === f) ? "" : "none";
-  });
+const rows=document.getElementById("rows");
+rows.innerHTML="";
+if(filtered.length===0){
+rows.innerHTML='<tr><td colspan="6" class="empty">No invoices found.</td></tr>';
+}else{
+filtered.forEach(inv=>{
+const i=invoices.indexOf(inv);
+const tr=document.createElement("tr");
+tr.innerHTML=`
+<td><strong>${safe(inv.id)}</strong></td>
+<td>${safe(inv.customer)}</td>
+<td>${safe(inv.date)}</td>
+<td>${money(Number(inv.amount))}</td>
+<td><span class="status ${inv.status.toLowerCase()}">${inv.status}</span></td>
+<td>
+<button class="action" onclick="togglePaid(${i})">${inv.status==="Paid"?"Mark pending":"Mark paid"}</button>
+<button class="danger" onclick="deleteInvoice(${i})">Delete</button>
+</td>`;
+rows.appendChild(tr);
+});
 }
-
-function displayInvoice(invoice) {
-  const row = document.createElement("tr");
-
-  [
-    invoice.id,
-    invoice.customer,
-    invoice.date,
-    "€" + invoice.amount
-  ].forEach(value => {
-    const cell = document.createElement("td");
-    cell.textContent = value;
-    row.appendChild(cell);
-  });
-
-  const statusCell = document.createElement("td");
-  const badge = document.createElement("span");
-
-  badge.className = "status pending";
-  badge.textContent = "Pending";
-
-  statusCell.appendChild(badge);
-  row.appendChild(statusCell);
-
-  document.getElementById("rows").appendChild(row);
+save();
 }
-
-function updateTotal() {
-  document.getElementById("total").textContent =
-    4 + savedInvoices.length;
+function togglePaid(i){
+invoices[i].status=invoices[i].status==="Paid"?"Pending":"Paid";
+render();
 }
-
-function uploadFile(input) {
-  if (!input.files.length) return;
-
-  const file = input.files[0];
-
-  const customer = prompt("Enter customer or supplier name:");
-  if (!customer || !customer.trim()) {
-    input.value = "";
-    return;
-  }
-
-  const amount = prompt("Enter invoice amount in euros:");
-
-  if (!amount || !Number.isFinite(Number(amount)) || Number(amount) <= 0) {
-    alert("Please enter a valid amount.");
-    input.value = "";
-    return;
-  }
-
-  const invoice = {
-    id: "INV-" + Date.now(),
-    customer: customer.trim(),
-    date: new Date().toLocaleDateString("en-US"),
-    amount: Number(amount).toFixed(2),
-    filename: file.name
-  };
-
-  savedInvoices.push(invoice);
-
-  localStorage.setItem(
-    storageKey,
-    JSON.stringify(savedInvoices)
-  );
-
-  displayInvoice(invoice);
-  updateTotal();
-
-  document.getElementById("notice").textContent =
-    "Invoice added successfully: " + file.name;
-
-  input.value = "";
+function deleteInvoice(i){
+if(confirm("Delete this invoice?")){
+invoices.splice(i,1);
+render();
 }
-
-savedInvoices.forEach(displayInvoice);
-updateTotal();
+}
+document.getElementById("form").addEventListener("submit",function(e){
+e.preventDefault();
+const customer=document.getElementById("customer").value.trim();
+const amount=Number(document.getElementById("amount").value);
+const due=document.getElementById("due").value;
+if(!customer||!Number.isFinite(amount)||amount<=0||!due)return;
+invoices.unshift({
+id:"INV-"+Date.now().toString().slice(-6),
+customer,
+date:new Date().toISOString().slice(0,10),
+amount,
+due,
+status:due<new Date().toISOString().slice(0,10)?"Overdue":"Pending"
+});
+closeModal();
+render();
+});
+render();
 </script>
 </body>
 </html>
