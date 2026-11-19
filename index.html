@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InvoiceAI - Smart Invoice Management</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f5f6fb;color:#18213b}
+header{background:#fff;padding:20px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee}
+.logo{font-size:23px;font-weight:800;color:#5546d9}
+.logo span{color:#18213b}
+nav{display:flex;gap:20px;align-items:center}
+nav a{text-decoration:none;color:#596078;font-size:14px}
+.container{max-width:1100px;margin:35px auto;padding:0 20px}
+h1{font-size:28px;margin-bottom:8px}
+.subtitle{color:#81889b;margin-bottom:28px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;gap:12px;flex-wrap:wrap}
+button{background:#5948dc;color:white;border:0;padding:12px 18px;border-radius:9px;font-weight:bold;cursor:pointer}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.card{background:white;padding:22px;border-radius:13px;border:1px solid #ececf3}
+.card p{color:#858b9e;font-size:13px;margin-bottom:13px}
+.card strong{font-size:25px}
+.green{color:#16a36a;font-size:12px;margin-top:8px}
+.section{background:white;border:1px solid #ececf3;border-radius:13px;margin-top:25px;padding:22px;overflow:hidden}
+.section h2{font-size:19px;margin-bottom:18px}
+.tools{display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap}
+input,select{padding:11px;border:1px solid #e1e2eb;border-radius:8px;background:white;max-width:100%}
+table{width:100%;border-collapse:collapse;text-align:left;min-width:600px}
+th,td{padding:15px 10px;border-bottom:1px solid #eee;font-size:13px}
+th{color:#8990a3}
+.status{padding:6px 9px;border-radius:20px;font-size:11px;font-weight:bold}
+.paid{background:#e4f8ed;color:#13834e}
+.pending{background:#fff4dc;color:#a16a0b}
+.late{background:#ffe9e9;color:#c33d3d}
+footer{text-align:center;color:#9298a8;padding:30px;font-size:12px}
+#notice{margin-top:12px;color:#16845b;font-size:13px}
+@media(max-width:700px){
+nav a{display:none}
+.cards{grid-template-columns:repeat(2,1fr)}
+.container{margin-top:25px}
+.card{padding:15px}
+.card strong{font-size:21px}
+header{padding:17px 5%}
+}
+@media(max-width:380px){.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">Invoice<span>AI.</span></div>
+<nav>
+<a href="#">Dashboard</a>
+<a href="#invoices">Invoices</a>
+<a href="#reports">Reports</a>
+<button onclick="document.getElementById('file').click()">+ Upload</button>
+</nav>
+</header>
+
+<main class="container">
+<div class="top">
+<div>
+<h1>Dashboard</h1>
+<p class="subtitle">Welcome back! Here's your invoice overview.</p>
+</div>
+<button onclick="document.getElementById('file').click()">+ Add invoice</button>
+<input id="file" type="file" accept=".pdf,.png,.jpg,.jpeg" hidden onchange="uploadFile(this)">
+</div>
+
+<div class="cards">
+<div class="card"><p>Total invoices</p><strong id="total">128</strong><div class="green">All invoices</div></div>
+<div class="card"><p>Total paid</p><strong>€24,850</strong><div class="green">Payments received</div></div>
+<div class="card"><p>Pending</p><strong id="pending">€4,200</strong><div class="green">Awaiting payment</div></div>
+<div class="card"><p>Overdue</p><strong>€1,350</strong><div style="color:#c33d3d;font-size:12px;margin-top:8px">Needs attention</div></div>
+</div>
+
+<div class="section" id="invoices">
+<h2>Recent invoices</h2>
+<div class="tools">
+<input id="search" placeholder="Search invoices..." oninput="filterInvoices()">
+<select id="filter" onchange="filterInvoices()">
+<option value="all">All statuses</option>
+<option value="Paid">Paid</option>
+<option value="Pending">Pending</option>
+<option value="Overdue">Overdue</option>
+</select>
+</div>
+<div style="overflow-x:auto">
+<table>
+<thead><tr><th>Invoice</th><th>Customer</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+<tbody id="rows">
+<tr><td>#INV-001</td><td>Acme Studio</td><td>Nov 10, 2026</td><td>€850</td><td><span class="status paid">Paid</span></td></tr>
+<tr><td>#INV-002</td><td>Bright Media</td><td>Nov 12, 2026</td><td>€1,200</td><td><span class="status pending">Pending</span></td></tr>
+<tr><td>#INV-003</td><td>Nova Design</td><td>Oct 28, 2026</td><td>€650</td><td><span class="status late">Overdue</span></td></tr>
+<tr><td>#INV-004</td><td>Pixel Works</td><td>Nov 15, 2026</td><td>€950</td><td><span class="status paid">Paid</span></td></tr>
+</tbody>
+</table>
+</div>
+<p id="notice"></p>
+</div>
+
+<div class="section" id="reports">
+<h2>Payment reminders</h2>
+<p style="color:#81889b;font-size:14px;margin-bottom:15px">Keep track of invoices that need attention.</p>
+<button onclick="alert('Reminder prepared! Connect an email service to send it.')">Prepare payment reminder</button>
+</div>
+</main>
+<footer>© 2026 InvoiceAI. Smart invoice management.</footer>
+
+<script>
+function filterInvoices(){
+const q=document.getElementById('search').value.toLowerCase();
+const f=document.getElementById('filter').value;
+document.querySelectorAll('#rows tr').forEach(row=>{
+const matches=row.innerText.toLowerCase().includes(q);
+const status=row.cells[4].innerText;
+row.style.display=matches&&(f==='all'||status===f)?'':'none';
+});
+}
+function uploadFile(input){
+if(!input.files.length)return;
+document.getElementById('notice').innerText=
+'File selected: '+input.files[0].name+'. Automatic invoice reading will be added in a future version.';
+}
+</script>
+</body>
+</html>
