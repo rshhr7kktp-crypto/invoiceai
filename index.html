@@ -109,20 +109,101 @@ header{padding:17px 5%}
 <footer>© 2026 InvoiceAI. Smart invoice management.</footer>
 
 <script>
-function filterInvoices(){
-const q=document.getElementById('search').value.toLowerCase();
-const f=document.getElementById('filter').value;
-document.querySelectorAll('#rows tr').forEach(row=>{
-const matches=row.innerText.toLowerCase().includes(q);
-const status=row.cells[4].innerText;
-row.style.display=matches&&(f==='all'||status===f)?'':'none';
-});
+const storageKey = "invoiceai_invoices";
+
+let savedInvoices = JSON.parse(
+  localStorage.getItem(storageKey) || "[]"
+);
+
+function filterInvoices() {
+  const q = document.getElementById("search").value.toLowerCase();
+  const f = document.getElementById("filter").value;
+
+  document.querySelectorAll("#rows tr").forEach(row => {
+    const matches = row.innerText.toLowerCase().includes(q);
+    const status = row.cells[4].innerText;
+
+    row.style.display =
+      matches && (f === "all" || status === f) ? "" : "none";
+  });
 }
-function uploadFile(input){
-if(!input.files.length)return;
-document.getElementById('notice').innerText=
-'File selected: '+input.files[0].name+'. Automatic invoice reading will be added in a future version.';
+
+function displayInvoice(invoice) {
+  const row = document.createElement("tr");
+
+  [
+    invoice.id,
+    invoice.customer,
+    invoice.date,
+    "€" + invoice.amount
+  ].forEach(value => {
+    const cell = document.createElement("td");
+    cell.textContent = value;
+    row.appendChild(cell);
+  });
+
+  const statusCell = document.createElement("td");
+  const badge = document.createElement("span");
+
+  badge.className = "status pending";
+  badge.textContent = "Pending";
+
+  statusCell.appendChild(badge);
+  row.appendChild(statusCell);
+
+  document.getElementById("rows").appendChild(row);
 }
+
+function updateTotal() {
+  document.getElementById("total").textContent =
+    4 + savedInvoices.length;
+}
+
+function uploadFile(input) {
+  if (!input.files.length) return;
+
+  const file = input.files[0];
+
+  const customer = prompt("Enter customer or supplier name:");
+  if (!customer || !customer.trim()) {
+    input.value = "";
+    return;
+  }
+
+  const amount = prompt("Enter invoice amount in euros:");
+
+  if (!amount || !Number.isFinite(Number(amount)) || Number(amount) <= 0) {
+    alert("Please enter a valid amount.");
+    input.value = "";
+    return;
+  }
+
+  const invoice = {
+    id: "INV-" + Date.now(),
+    customer: customer.trim(),
+    date: new Date().toLocaleDateString("en-US"),
+    amount: Number(amount).toFixed(2),
+    filename: file.name
+  };
+
+  savedInvoices.push(invoice);
+
+  localStorage.setItem(
+    storageKey,
+    JSON.stringify(savedInvoices)
+  );
+
+  displayInvoice(invoice);
+  updateTotal();
+
+  document.getElementById("notice").textContent =
+    "Invoice added successfully: " + file.name;
+
+  input.value = "";
+}
+
+savedInvoices.forEach(displayInvoice);
+updateTotal();
 </script>
 </body>
 </html>
