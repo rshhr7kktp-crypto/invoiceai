@@ -428,13 +428,64 @@ $("overdue").textContent=money(sum(x=>x.status==="pending"&&x.due_date<t));
 }
 function invoiceRow(x,actions){
 return `<tr>
-<td>${safe(x.invoice_number)}</td><td>${safe(x.customer)}</td>
-<td>${money(x.amount)}</td><td>${dateFormat(x.due_date)}</td><td>${statusHTML(x)}</td>
+<td>${safe(x.invoice_number)}</td>
+<td>${safe(x.customer)}</td>
+<td>${money(x.amount)}</td>
+<td>${dateFormat(x.due_date)}</td>
+<td>${statusHTML(x)}</td>
 ${actions?`<td>
+<button class="secondary" data-action="pdf" data-id="${safe(x.id)}">📄 PDF</button>
 <button class="secondary" data-action="toggle" data-id="${safe(x.id)}">${x.status==="paid"?"En attente":"Payée"}</button>
 <button class="danger" data-action="delete" data-id="${safe(x.id)}">Supprimer</button>
 </td>`:""}
 </tr>`;
+}
+function downloadInvoicePDF(x){
+if(!window.jspdf?.jsPDF){
+alert("La bibliothèque PDF n'est pas chargée. Actualise la page.");
+return;
+}
+
+const {jsPDF}=window.jspdf;
+const doc=new jsPDF();
+
+doc.setFont("helvetica","bold");
+doc.setFontSize(22);
+doc.setTextColor(101,85,232);
+doc.text("InvoiceAI Pro",20,25);
+
+doc.setTextColor(35,39,60);
+doc.setFontSize(18);
+doc.text("FACTURE",20,43);
+
+doc.setFont("helvetica","normal");
+doc.setFontSize(11);
+doc.text("Numero : "+String(x.invoice_number||""),20,58);
+doc.text("Client : "+String(x.customer||""),20,68);
+doc.text("Date d'echeance : "+dateFormat(x.due_date),20,78);
+
+doc.setDrawColor(220,222,235);
+doc.line(20,90,190,90);
+
+doc.setFont("helvetica","bold");
+doc.setFontSize(13);
+doc.text("Montant total",20,108);
+
+doc.setFontSize(20);
+doc.setTextColor(101,85,232);
+doc.text(money(x.amount),20,123);
+
+doc.setTextColor(35,39,60);
+doc.setFont("helvetica","normal");
+doc.setFontSize(10);
+doc.text("Statut : "+(x.status==="paid"?"Payee":"En attente"),20,143);
+
+doc.setFontSize(9);
+doc.setTextColor(130,135,150);
+doc.text("Document de demonstration.",20,275);
+
+const filename=String(x.invoice_number||"facture").replace(/[^a-zA-Z0-9_-]/g,"_");
+doc.save(filename+".pdf");
 }
 function renderInvoices(){
 const q=$("search").value.toLowerCase();
@@ -547,10 +598,10 @@ const btn=event.target.closest("[data-action]");
 if(!btn)return;
 const x=invoices.find(v=>String(v.id)===String(btn.dataset.id));
 if(!x)return;
+if(btn.dataset.action==="pdf")downloadInvoicePDF(x);
 if(btn.dataset.action==="toggle")toggleStatus(x.id,x.status);
 if(btn.dataset.action==="delete")removeInvoice(x.id);
 });
-
 async function enterApp(session){
 if(!session?.user)return;
 if(currentUserId===session.user.id&&!$("app").classList.contains("hidden"))return;
