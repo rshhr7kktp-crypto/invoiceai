@@ -106,8 +106,16 @@ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
 gap:15px;margin-bottom:20px
 }
 .stat{
-background:white;border:1px solid var(--border);border-radius:16px;
-padding:20px;box-shadow:0 5px 22px #242b5010
+background:linear-gradient(145deg,#ffffff,#f8f7ff);
+border:1px solid #e9e7f5;
+border-radius:20px;
+padding:22px;
+box-shadow:0 8px 25px #242b5012;
+transition:transform .2s,box-shadow .2s;
+}
+.stat:hover{
+transform:translateY(-4px);
+box-shadow:0 13px 30px #6555e820;
 }
 .stat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
 .stat-icon{
