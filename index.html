@@ -5,52 +5,610 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="google-site-verification" content="mywQzH9AkB0e-FbbOXU1IEX9_D9tLBw8Uug8LeciyIU">
-<title>InvoiceAI Pro</title>
-<meta name="description" content="InvoiceAI Pro : gérez vos factures, vos clients et vos paiements facilement.">
+<title>InvoiceAI Pro — Gestion intelligente</title>
+<meta name="description" content="InvoiceAI Pro : gérez vos factures, clients et paiements dans un espace professionnel.">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
+:root{
+--primary:#6555e8;
+--primary2:#8878ff;
+--dark:#171b35;
+--muted:#8b92a8;
+--bg:#f5f6fc;
+--border:#edf0f7;
+--green:#16a36a;
+--red:#df5c68;
+}
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f4f6fc;color:#202944}
+body{margin:0;background:var(--bg);color:#20243a;font-family:Inter,Arial,sans-serif}
 button,input,select{font:inherit}
 button{cursor:pointer;border:0}
 .hidden{display:none!important}
+button:disabled{opacity:.55;cursor:not-allowed}
 
 .auth{
-max-width:420px;margin:65px auto;background:white;padding:32px;
-border-radius:20px;box-shadow:0 12px 40px #19234612;
+width:calc(100% - 30px);max-width:420px;margin:70px auto;
+background:white;padding:35px;border-radius:22px;
+box-shadow:0 20px 70px #22264a12
 }
-.auth h1{margin-top:0}
-.auth p{color:#8992a8;font-size:14px}
-.auth label{font-size:13px;font-weight:bold}
+.auth h1{font-size:28px;letter-spacing:-1px}
+.auth h1 span{color:var(--primary)}
+.auth p{font-size:13px;color:var(--muted);line-height:1.6}
+.auth label{font-size:12px;font-weight:bold}
 .auth input{
-width:100%;padding:13px;margin:9px 0 17px;
-border:1px solid #e0e5f0;border-radius:10px
+display:block;width:100%;padding:14px;margin:8px 0 18px;
+border:1px solid var(--border);border-radius:11px;outline:none
 }
-.primary,.secondary,.danger,.logout{
-padding:12px 15px;border-radius:10px;font-weight:bold
+.auth input:focus,.field input:focus,.search:focus{border-color:var(--primary)}
+.primary{
+background:linear-gradient(120deg,var(--primary),var(--primary2));
+color:white;padding:12px 17px;border-radius:10px;font-weight:bold;
+box-shadow:0 5px 13px #6555e82b
 }
-.primary{background:#6555df;color:white}
-.primary:hover{background:#5142c5}
-.secondary{background:#eeecff;color:#5949cf}
-.danger{background:#fff0f0;color:#cf4545}
-#message,#appMessage{font-size:13px;color:#6555df;overflow-wrap:anywhere}
+.secondary{background:#efedff;color:#5d4bd6;padding:11px 15px;border-radius:10px;font-weight:bold}
+.danger{background:#fff0f0;color:var(--red);padding:9px 12px;border-radius:9px;font-weight:bold}
+#message,#appMessage{font-size:13px;color:var(--primary);overflow-wrap:anywhere}
 
 .layout{display:flex;min-height:100vh}
 .sidebar{
-width:245px;background:#111a35;color:white;padding:25px 17px;
-display:flex;flex-direction:column;flex-shrink:0
+width:250px;background:var(--dark);color:white;
+padding:26px 18px;display:flex;flex-direction:column;
+flex-shrink:0
 }
-.brand{font-size:23px;font-weight:800;padding:5px 12px 32px}
-.brand span{color:#a99fff}
-.menu-title{font-size:10px;color:#8791ad;font-weight:bold;letter-spacing:1.5px;padding:0 12px 12px}
-.nav-area{display:flex;flex-direction:column;gap:5px}
+.brand{font-size:23px;font-weight:900;letter-spacing:-1px;padding:5px 10px 36px}
+.brand span{color:#a89cff}
+.menu-label{font-size:10px;letter-spacing:1.7px;color:#777f9e;padding:0 12px 13px;font-weight:bold}
+.nav-area{display:flex;flex-direction:column;gap:7px}
 .nav-btn{
-display:flex;align-items:center;gap:12px;width:100%;
-text-align:left;padding:13px 14px;border-radius:10px;
-background:transparent;color:#c1c9dc;font-size:14px;font-weight:600
+width:100%;display:flex;align-items:center;gap:13px;
+text-align:left;padding:13px;border-radius:11px;
+background:transparent;color:#aeb5ca;font-size:13px;font-weight:600;
+transition:.2s
 }
-.nav-btn:hover,.nav-btn.active{background:#29345a;color:white}
+.nav-btn:hover,.nav-btn.active{background:#303457;color:white}
+.nav-btn.active{box-shadow:inset 3px 0 #a99cff}
+.nav-icon{width:22px;font-size:17px;text-align:center}
+.sidebar-bottom{margin-top:auto;padding-top:25px}
+.logout{width:100%;background:#303457;color:white;padding:12px;border-radius:10px;font-weight:bold}
+.logout:hover{background:#41496f}
+
+.content{flex:1;min-width:0;padding:30px 34px}
+.page{max-width:1350px;margin:auto}
+.topbar{
+display:flex;justify-content:space-between;align-items:center;
+gap:15px;flex-wrap:wrap;margin-bottom:28px
+}
+.topbar h1{font-size:27px;letter-spacing:-.8px;margin:0 0 6px}
+.subtitle{font-size:12px;color:var(--muted);margin:0}
+.profile{
+display:flex;align-items:center;gap:10px;
+background:white;border:1px solid var(--border);
+padding:9px 14px;border-radius:12px;font-size:12px;color:#626a82
+}
+.profile-dot{width:9px;height:9px;background:#36bd83;border-radius:50%}
+
+.welcome{
+background:linear-gradient(115deg,#28264f,#5146a9 65%,#7868ec);
+border-radius:20px;padding:25px 27px;color:white;
+margin-bottom:21px;position:relative;overflow:hidden
+}
+.welcome:after{
+content:"";position:absolute;width:230px;height:230px;
+border:35px solid #ffffff0c;border-radius:50%;
+right:-45px;top:-110px
+}
+.welcome h2{font-size:21px;margin:0 0 8px;position:relative;z-index:1}
+.welcome p{font-size:12px;color:#dedbff;margin:0;position:relative;z-index:1}
+
+.stats{
+display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+gap:15px;margin-bottom:20px
+}
+.stat{
+background:white;border:1px solid var(--border);border-radius:16px;
+padding:20px;box-shadow:0 5px 22px #242b5010
+}
+.stat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.stat-icon{
+width:39px;height:39px;border-radius:12px;
+display:flex;align-items:center;justify-content:center;font-size:18px
+}
+.purple{background:#efedff}
+.green{background:#e5f8ef}
+.orange{background:#fff2df}
+.redbg{background:#fff0f0}
+.stat-label{font-size:12px;color:var(--muted);font-weight:600}
+.stat-value{font-size:24px;font-weight:850;letter-spacing:-.7px;overflow-wrap:anywhere}
+.stat-note{font-size:10px;color:#a0a6b6;margin-top:8px}
+
+.grid-main{display:grid;grid-template-columns:1.5fr 1fr;gap:17px}
+.panel{
+background:white;border:1px solid var(--border);
+border-radius:17px;padding:22px;margin-bottom:18px;
+box-shadow:0 5px 22px #242b5008
+}
+.panel-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:5px}
+.panel-title{font-size:15px;font-weight:800;margin:0}
+.panel-sub{font-size:11px;color:var(--muted);margin:6px 0 19px}
+.chart{height:185px;display:flex;align-items:flex-end;gap:12px;padding:10px 3px 0;border-bottom:1px solid var(--border)}
+.chart-column{height:100%;flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:9px}
+.bar-area{height:145px;width:100%;display:flex;align-items:flex-end;justify-content:center}
+.bar{
+width:48%;max-width:40px;min-height:4px;
+background:linear-gradient(180deg,#a99dff,#6555e8);
+border-radius:7px 7px 2px 2px;transition:height .3s
+}
+.bar-label{font-size:10px;color:var(--muted)}
+.quick-list{display:flex;flex-direction:column;gap:10px}
+.quick-item{
+display:flex;justify-content:space-between;align-items:center;
+gap:10px;padding:12px;background:#f8f8fd;border-radius:11px;font-size:12px
+}
+.quick-item strong{font-size:12px}
+.quick-item small{display:block;color:var(--muted);margin-top:5px}
+
+.table-head{
+display:flex;justify-content:space-between;align-items:center;
+gap:12px;flex-wrap:wrap;margin-bottom:17px
+}
+.search,.filter{
+padding:11px 13px;border:1px solid #e5e7f0;
+border-radius:10px;background:white;color:#343a52
+}
+.search{width:100%;max-width:260px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{padding:14px 10px;text-align:left;border-bottom:1px solid #f0f1f6;font-size:12px}
+th{color:#9299ad;font-weight:700}
+td{color:#414962}
+.status{display:inline-block;padding:6px 9px;border-radius:20px;font-size:10px;font-weight:bold;background:#fff3df;color:#a66a00;white-space:nowrap}
+.status.paid{background:#e6f8ef;color:#198650}
+.status.late{background:#fff0f0;color:#cf505b}
+.empty{text-align:center;padding:27px;color:var(--muted);font-size:13px}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field label{display:block;font-size:12px;font-weight:bold;margin-bottom:7px}
+.field input{width:100%;padding:12px;border:1px solid #e2e5ee;border-radius:10px;margin-bottom:13px}
+.form-actions{display:flex;gap:9px;flex-wrap:wrap}
+
+.client-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.client-card{padding:19px;border:1px solid var(--border);border-radius:14px;background:#fafaff}
+.client-avatar{
+width:42px;height:42px;border-radius:13px;background:#efedff;color:var(--primary);
+display:flex;align-items:center;justify-content:center;font-weight:800;margin-bottom:13px
+}
+.client-card strong{font-size:14px}
+.client-card p{font-size:11px;color:var(--muted)}
+.footer{text-align:center;color:#a2a8b8;font-size:10px;padding:15px}
+
+@media(max-width:1050px){
+.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-main{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+.layout{display:block}
+.sidebar{width:100%;padding:13px}
+.brand{padding:5px 8px 13px}
+.menu-label{display:none}
+.nav-area{flex-direction:row;overflow-x:auto;gap:5px}
+.nav-btn{width:auto;white-space:nowrap;padding:10px;font-size:11px}
+.nav-icon{width:auto}
+.sidebar-bottom{padding-top:11px}
+.logout{width:auto;padding:9px 14px;font-size:11px}
+.content{padding:19px 13px}
+.topbar h1{font-size:23px}
+.welcome{padding:21px}
+.stats{gap:9px}
+.stat{padding:13px}
+.stat-value{font-size:18px}
+.stat-icon{width:34px;height:34px}
+.panel{padding:16px}
+.form-grid{grid-template-columns:1fr}
+.search{max-width:none}
+}
+</style>
+</head>
+<body>
+
+<section id="auth" class="auth">
+<h1>InvoiceAI <span>Pro</span></h1>
+<p>Ton espace professionnel de gestion des factures.</p>
+<label>Email</label>
+<input id="email" type="email" placeholder="Ton adresse email">
+<label>Mot de passe</label>
+<input id="password" type="password" placeholder="Ton mot de passe">
+<button class="primary" id="login">Se connecter</button>
+<button class="secondary" id="signup">Créer un compte</button>
+<p id="message"></p>
+</section>
+
+<div id="app" class="layout hidden">
+<aside class="sidebar">
+<div class="brand">InvoiceAI <span>Pro</span></div>
+<div class="menu-label">ESPACE DE TRAVAIL</div>
+<div class="nav-area">
+<button class="nav-btn active" data-page="dashboard"><span class="nav-icon">▦</span> Tableau de bord</button>
+<button class="nav-btn" data-page="invoices"><span class="nav-icon">▤</span> Factures</button>
+<button class="nav-btn" data-page="clients"><span class="nav-icon">♙</span> Clients</button>
+</div>
+<div class="sidebar-bottom">
+<button class="logout" id="logout">↪ Déconnexion</button>
+</div>
+</aside>
+
+<main class="content">
+<div class="page">
+<header class="topbar">
+<div>
+<h1 id="pageTitle">Tableau de bord</h1>
+<p class="subtitle" id="pageSubtitle">Vue générale de ton activité</p>
+</div>
+<div class="profile"><span class="profile-dot"></span> Espace professionnel</div>
+</header>
+
+<section id="dashboardPage">
+<div class="welcome">
+<h2>Bienvenue sur InvoiceAI Pro ✨</h2>
+<p>Retrouve toutes les informations importantes de ton activité au même endroit.</p>
+</div>
+
+<div class="stats">
+<div class="stat">
+<div class="stat-top"><span class="stat-label">Factures créées</span><span class="stat-icon purple">📄</span></div>
+<div class="stat-value" id="count">0</div>
+<div class="stat-note">Nombre total de factures</div>
+</div>
+<div class="stat">
+<div class="stat-top"><span class="stat-label">Total encaissé</span><span class="stat-icon green">💰</span></div>
+<div class="stat-value" id="paid">0 €</div>
+<div class="stat-note">Factures payées</div>
+</div>
+<div class="stat">
+<div class="stat-top"><span class="stat-label">En attente</span><span class="stat-icon orange">⏳</span></div>
+<div class="stat-value" id="pending">0 €</div>
+<div class="stat-note">Paiements à recevoir</div>
+</div>
+<div class="stat">
+<div class="stat-top"><span class="stat-label">En retard</span><span class="stat-icon redbg">⚠️</span></div>
+<div class="stat-value" id="overdue">0 €</div>
+<div class="stat-note">Échéances dépassées</div>
+</div>
+</div>
+
+<div class="grid-main">
+<div class="panel">
+<div class="panel-heading"><h3 class="panel-title">Activité financière</h3></div>
+<p class="panel-sub">Montants facturés sur les six derniers mois</p>
+<div id="chart" class="chart"></div>
+</div>
+<div class="panel">
+<div class="panel-heading"><h3 class="panel-title">Activité récente</h3></div>
+<p class="panel-sub">Tes dernières factures enregistrées</p>
+<div id="recent" class="quick-list"></div>
+</div>
+</div>
+
+<div class="panel">
+<div class="table-head">
+<div><h3 class="panel-title">Dernières factures</h3><p class="panel-sub">Un aperçu de tes documents récents</p></div>
+<button class="primary" id="dashboardAdd">+ Créer une facture</button>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Numéro</th><th>Client</th><th>Montant</th><th>Échéance</th><th>Statut</th></tr></thead>
+<tbody id="dashboardRows"></tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section id="invoicesPage" class="hidden">
+<div class="panel">
+<div class="table-head">
+<div><h3 class="panel-title">Gestion des factures</h3><p class="panel-sub">Crée, recherche et suis tes factures.</p></div>
+<button class="primary" id="showForm">+ Nouvelle facture</button>
+</div>
+
+<div id="formPanel" class="panel hidden">
+<h3 class="panel-title">Nouvelle facture</h3>
+<p class="panel-sub">Complète les informations ci-dessous.</p>
+<div class="form-grid">
+<div class="field"><label>Nom du client</label><input id="customer" maxlength="100" placeholder="Nom du client"></div>
+<div class="field"><label>Montant en euros</label><input id="amount" type="number" min="0.01" step="0.01" placeholder="850"></div>
+<div class="field"><label>Date d'émission</label><input id="invoiceDate" type="date"></div>
+<div class="field"><label>Date d'échéance</label><input id="dueDate" type="date"></div>
+</div>
+<div class="form-actions">
+<button class="primary" id="add">Enregistrer la facture</button>
+<button class="secondary" id="cancel">Annuler</button>
+</div>
+</div>
+
+<div class="table-head">
+<input class="search" id="search" placeholder="Rechercher une facture...">
+<select class="filter" id="statusFilter">
+<option value="all">Tous les statuts</option>
+<option value="pending">En attente</option>
+<option value="paid">Payées</option>
+<option value="late">En retard</option>
+</select>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Numéro</th><th>Client</th><th>Montant</th><th>Échéance</th><th>Statut</th><th>Actions</th></tr></thead>
+<tbody id="rows"></tbody>
+</table>
+</div>
+<p id="empty" class="empty">Aucune facture enregistrée.</p>
+<p id="appMessage"></p>
+</div>
+</section>
+
+<section id="clientsPage" class="hidden">
+<div class="panel">
+<h3 class="panel-title">Espace clients</h3>
+<p class="panel-sub">Liste des clients présents dans tes factures.</p>
+<div id="clientGrid" class="client-grid"></div>
+<p id="noClients" class="empty hidden">Aucun client pour le moment.</p>
+</div>
+</section>
+
+<div class="footer">InvoiceAI Pro · Gestion professionnelle</div>
+</div>
+</main>
+</div>
+
+<script>
+const SUPABASE_URL="https://yoaoocaynhssfyoktfxn.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_R1D6LFxzTdJWnN4MhU5ccg_W0_gqrZ4";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const $=id=>document.getElementById(id);
+let invoices=[];
+let currentUserId=null;
+
+function money(n){
+return Number(n||0).toLocaleString("fr-FR",{style:"currency",currency:"EUR"});
+}
+function today(){
+const d=new Date();
+return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function safe(s){
+return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function dateFormat(v){
+return v?new Date(v+"T12:00:00").toLocaleDateString("fr-FR"):"—";
+}
+function statusHTML(x){
+if(x.status==="paid")return '<span class="status paid">Payée</span>';
+if(x.due_date<today())return '<span class="status late">En retard</span>';
+return '<span class="status">En attente</span>';
+}
+
+function showPage(page){
+["dashboard","invoices","clients"].forEach(p=>{
+$(p+"Page").classList.toggle("hidden",p!==page);
+});
+document.querySelectorAll(".nav-btn").forEach(b=>{
+b.classList.toggle("active",b.dataset.page===page);
+});
+const titles={
+dashboard:["Tableau de bord","Vue générale de ton activité"],
+invoices:["Mes factures","Gestion et suivi des paiements"],
+clients:["Mes clients","Retrouve les clients de tes factures"]
+};
+$("pageTitle").textContent=titles[page][0];
+$("pageSubtitle").textContent=titles[page][1];
+}
+document.querySelectorAll(".nav-btn").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+
+async function loadInvoices(){
+$("appMessage").textContent="Chargement...";
+const {data,error}=await db.from("invoices").select("*").order("created_at",{ascending:false});
+if(error){
+$("appMessage").textContent="Erreur de chargement : "+error.message;
+return;
+}
+invoices=data||[];
+renderAll();
+$("appMessage").textContent="";
+}
+
+function renderAll(){
+renderStats();renderInvoices();renderDashboard();renderChart();renderClients();
+}
+function renderStats(){
+const sum=fn=>invoices.filter(fn).reduce((s,x)=>s+Number(x.amount||0),0);
+const t=today();
+$("count").textContent=invoices.length;
+$("paid").textContent=money(sum(x=>x.status==="paid"));
+$("pending").textContent=money(sum(x=>x.status==="pending"&&x.due_date>=t));
+$("overdue").textContent=money(sum(x=>x.status==="pending"&&x.due_date<t));
+}
+function invoiceRow(x,actions){
+return `<tr>
+<td>${safe(x.invoice_number)}</td><td>${safe(x.customer)}</td>
+<td>${money(x.amount)}</td><td>${dateFormat(x.due_date)}</td><td>${statusHTML(x)}</td>
+${actions?`<td>
+<button class="secondary" data-action="toggle" data-id="${safe(x.id)}">${x.status==="paid"?"En attente":"Payée"}</button>
+<button class="danger" data-action="delete" data-id="${safe(x.id)}">Supprimer</button>
+</td>`:""}
+</tr>`;
+}
+function renderInvoices(){
+const q=$("search").value.toLowerCase();
+const filter=$("statusFilter").value;
+const shown=invoices.filter(x=>{
+const match=String(x.customer).toLowerCase().includes(q)||String(x.invoice_number).toLowerCase().includes(q);
+const late=x.status==="pending"&&x.due_date<today();
+const status=filter==="all"||(filter==="paid"&&x.status==="paid")||(filter==="late"&&late)||(filter==="pending"&&x.status==="pending"&&!late);
+return match&&status;
+});
+$("rows").innerHTML=shown.map(x=>invoiceRow(x,true)).join("");
+$("empty").classList.toggle("hidden",shown.length>0);
+}
+function renderDashboard(){
+$("dashboardRows").innerHTML=invoices.slice(0,5).map(x=>invoiceRow(x,false)).join("");
+const recent=invoices.slice(0,4);
+$("recent").innerHTML=recent.length?recent.map(x=>`
+<div class="quick-item">
+<div><strong>${safe(x.customer)}</strong><small>${safe(x.invoice_number)}</small></div>
+<strong>${money(x.amount)}</strong>
+</div>`).join(""):'<p class="empty">Aucune facture enregistrée.</p>';
+}
+function renderChart(){
+const months=[],now=new Date();
+for(let i=5;i>=0;i--){
+const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+months.push({year:d.getFullYear(),month:d.getMonth(),label:d.toLocaleDateString("fr-FR",{month:"short"})});
+}
+const values=months.map(m=>invoices.filter(x=>{
+if(!x.invoice_date)return false;
+const d=new Date(x.invoice_date+"T12:00:00");
+return d.getFullYear()===m.year&&d.getMonth()===m.month;
+}).reduce((s,x)=>s+Number(x.amount||0),0));
+const max=Math.max(...values,1);
+$("chart").innerHTML=months.map((m,i)=>`
+<div class="chart-column">
+<div class="bar-area"><div class="bar" title="${money(values[i])}" style="height:${Math.max(3,values[i]/max*100)}%"></div></div>
+<div class="bar-label">${safe(m.label)}</div>
+</div>`).join("");
+}
+function renderClients(){
+const names=[...new Set(invoices.map(x=>String(x.customer||"").trim()).filter(Boolean))];
+$("clientGrid").innerHTML=names.map(name=>{
+const count=invoices.filter(x=>String(x.customer||"").trim()===name).length;
+return `<div class="client-card">
+<div class="client-avatar">${safe(name.charAt(0).toUpperCase())}</div>
+<strong>${safe(name)}</strong>
+<p>${count} facture${count>1?"s":""} enregistrée${count>1?"s":""}</p>
+</div>`;
+}).join("");
+$("noClients").classList.toggle("hidden",names.length>0);
+}
+
+function openForm(){
+showPage("invoices");
+$("formPanel").classList.remove("hidden");
+$("invoiceDate").value=today();
+$("dueDate").value=today();
+$("appMessage").textContent="";
+}
+$("showForm").onclick=openForm;
+$("dashboardAdd").onclick=openForm;
+$("cancel").onclick=()=>{$("formPanel").classList.add("hidden");$("appMessage").textContent="";};
+$("search").oninput=renderInvoices;
+$("statusFilter").onchange=renderInvoices;
+
+async function addInvoice(){
+const customer=$("customer").value.trim();
+const amount=Number($("amount").value);
+const invoiceDate=$("invoiceDate").value;
+const dueDate=$("dueDate").value;
+if(!customer||!amount||amount<=0||!invoiceDate||!dueDate){
+$("appMessage").textContent="Remplis correctement tous les champs.";
+return;
+}
+if(dueDate<invoiceDate){
+$("appMessage").textContent="La date d'échéance doit être après la date d'émission.";
+return;
+}
+const {data:{user}}=await db.auth.getUser();
+if(!user){$("appMessage").textContent="Reconnecte-toi pour continuer.";return;}
+$("add").disabled=true;
+$("add").textContent="Enregistrement...";
+const {error}=await db.from("invoices").insert({
+user_id:user.id,invoice_number:"FAC-"+Date.now(),
+customer,amount,invoice_date:invoiceDate,due_date:dueDate,status:"pending"
+});
+$("add").disabled=false;
+$("add").textContent="Enregistrer la facture";
+if(error){$("appMessage").textContent="Erreur : "+error.message;return;}
+$("customer").value="";$("amount").value="";
+$("formPanel").classList.add("hidden");
+await loadInvoices();
+}
+$("add").onclick=addInvoice;
+
+async function toggleStatus(id,status){
+const {error}=await db.from("invoices").update({status:status==="paid"?"pending":"paid"}).eq("id",id);
+if(error){$("appMessage").textContent=error.message;return;}
+await loadInvoices();
+}
+async function removeInvoice(id){
+if(!confirm("Veux-tu vraiment supprimer cette facture ?"))return;
+const {error}=await db.from("invoices").delete().eq("id",id);
+if(error){$("appMessage").textContent=error.message;return;}
+await loadInvoices();
+}
+document.addEventListener("click",event=>{
+const btn=event.target.closest("[data-action]");
+if(!btn)return;
+const x=invoices.find(v=>String(v.id)===String(btn.dataset.id));
+if(!x)return;
+if(btn.dataset.action==="toggle")toggleStatus(x.id,x.status);
+if(btn.dataset.action==="delete")removeInvoice(x.id);
+});
+
+async function enterApp(session){
+if(!session?.user)return;
+if(currentUserId===session.user.id&&!$("app").classList.contains("hidden"))return;
+currentUserId=session.user.id;
+$("auth").classList.add("hidden");
+$("app").classList.remove("hidden");
+showPage("dashboard");
+await loadInvoices();
+}
+$("login").onclick=async()=>{
+$("message").textContent="Connexion...";
+const {data,error}=await db.auth.signInWithPassword({
+email:$("email").value.trim(),password:$("password").value
+});
+if(error){$("message").textContent=error.message;return;}
+await enterApp(data.session);
+};
+$("signup").onclick=async()=>{
+const email=$("email").value.trim(),password=$("password").value;
+if(!email||!password){$("message").textContent="Entre ton email et ton mot de passe.";return;}
+if(password.length<6){$("message").textContent="Le mot de passe doit contenir au moins 6 caractères.";return;}
+$("message").textContent="Création du compte...";
+const {data,error}=await db.auth.signUp({
+email,password,
+options:{emailRedirectTo:"https://rshhr7kktp-crypto.github.io/invoiceai/"}
+});
+if(error){$("message").textContent=error.message;return;}
+if(data.session)await enterApp(data.session);
+else $("message").textContent="Compte créé. Vérifie ton email pour confirmer ton inscription.";
+};
+$("logout").onclick=async()=>{
+$("logout").disabled=true;
+$("logout").textContent="Déconnexion...";
+const {error}=await db.auth.signOut();
+if(error){
+$("appMessage").textContent="Erreur : "+error.message;
+$("logout").disabled=false;
+$("logout").textContent="↪ Déconnexion";
+}
+};
+db.auth.onAuthStateChange((event,session)=>{
+if(session&&(event==="SIGNED_IN"||event==="INITIAL_SESSION"))enterApp(session);
+if(event==="SIGNED_OUT"){
+currentUserId=null;invoices=[];
+$("app").classList.add("hidden");
+$("auth").classList.remove("hidden");
+$("logout").disabled=false;
+$("logout").textContent="↪ Déconnexion";
+$("email").value="";$("password").value="";
+}
+});
+(async()=>{
+const {data,error}=await db.auth.getSession();
+if(!error&&data.session)await enterApp(data.session);
+})();
+</script>
+</body>
+</html>
+nav-btn.active{background:#29345a;color:white}
 .nav-icon{font-size:18px;width:22px}
 .sidebar-bottom{margin-top:auto;padding-top:20px}
 .logout{width:100%;background:#29345a;color:white}
