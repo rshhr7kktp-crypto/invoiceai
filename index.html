@@ -210,7 +210,13 @@ await enterApp();
 
 $("signup").onclick=async()=>{
 $("message").textContent="Création du compte...";
-const {data,error}=await db.auth.signUp({email:$("email").value.trim(),password:$("password").value});
+const {data,error}=await db.auth.signUp({
+  email:$("email").value.trim(),
+  password:$("password").value,
+  options:{
+    emailRedirectTo:"https://rshhr7kktp-crypto.github.io/invoiceai/"
+  }
+});
 if(error){$("message").textContent=error.message;return;}
 if(data.session){await enterApp();}
 else{$("message").textContent="Compte créé. Vérifie ton email pour confirmer ton inscription.";}
