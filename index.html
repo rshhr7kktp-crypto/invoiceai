@@ -270,6 +270,41 @@ flex:1;
 padding:10px 8px;
 font-size:12px;
 }
+#dashboardPage .table-wrap{
+overflow:visible;
+}
+
+#dashboardPage table{
+width:100%;
+min-width:0;
+}
+
+#dashboardPage thead{
+display:none;
+}
+
+#dashboardPage tbody tr{
+display:block;
+background:#fafaff;
+border:1px solid #edf0f7;
+border-radius:14px;
+padding:10px;
+margin-bottom:14px;
+}
+
+#dashboardPage tbody td{
+display:flex;
+justify-content:space-between;
+gap:10px;
+padding:10px 4px;
+font-size:13px;
+}
+
+#dashboardPage tbody td:nth-child(1)::before{content:"N° facture"}
+#dashboardPage tbody td:nth-child(2)::before{content:"Client"}
+#dashboardPage tbody td:nth-child(3)::before{content:"Montant"}
+#dashboardPage tbody td:nth-child(4)::before{content:"Échéance"}
+#dashboardPage tbody td:nth-child(5)::before{content:"Statut"}
 }
 </style>
 </head>
