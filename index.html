@@ -10,34 +10,166 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f5f6fc;color:#20243a;font-family:Arial,sans-serif}
-header{background:white;padding:20px 5%;display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:23px;font-weight:bold;color:#6555df}
-button{border:0;border-radius:9px;padding:12px 16px;cursor:pointer;font-weight:bold;margin:3px}
-.primary{background:#6555df;color:white}
-.secondary{background:#eeeaff;color:#6555df}
-.danger{background:#ffeded;color:#c44}
-main{max-width:1050px;margin:30px auto;padding:0 16px}
-.auth{max-width:420px;margin:60px auto;background:white;padding:25px;border-radius:15px}
-input{display:block;width:100%;padding:12px;margin:8px 0 15px;border:1px solid #ddd;border-radius:8px}
-label{font-size:13px;font-weight:bold}
-h1{font-size:27px}
-.sub{color:#9299aa;font-size:13px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:22px 0}
-.card,.panel{background:white;padding:20px;border-radius:14px;margin-bottom:17px}
-.card p{color:#9299aa;font-size:13px}
-.card strong{font-size:23px}
-.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
-table{width:100%;border-collapse:collapse;min-width:600px}
-th,td{text-align:left;padding:13px 8px;border-bottom:1px solid #eee;font-size:12px}
-th{color:#9299aa}
+body{
+margin:0;
+background:#f3f5fb;
+color:#18213b;
+font-family:Arial,sans-serif;
+}
+header{
+background:#111a35;
+padding:20px 5%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 4px 18px rgba(15,25,55,.12);
+}
+.logo{
+font-size:24px;
+font-weight:800;
+color:white;
+letter-spacing:-.7px;
+}
+button{
+border:0;
+border-radius:11px;
+padding:13px 18px;
+cursor:pointer;
+font-weight:700;
+margin:3px;
+transition:.2s;
+}
+button:hover{transform:translateY(-2px)}
+.primary{
+background:#6555df;
+color:white;
+box-shadow:0 5px 13px rgba(101,85,223,.22);
+}
+.secondary{
+background:#eeecff;
+color:#5949cf;
+}
+.danger{
+background:#fff0f0;
+color:#d04444;
+}
+main{
+max-width:1100px;
+margin:38px auto;
+padding:0 18px;
+}
+.auth{
+max-width:430px;
+margin:65px auto;
+background:white;
+padding:32px;
+border-radius:20px;
+box-shadow:0 12px 35px rgba(30,45,85,.08);
+}
+input{
+display:block;
+width:100%;
+padding:14px;
+margin:9px 0 18px;
+border:1px solid #e0e4ef;
+border-radius:10px;
+background:#fafbff;
+font-size:14px;
+outline:none;
+}
+input:focus{
+border-color:#6555df;
+box-shadow:0 0 0 3px rgba(101,85,223,.10);
+}
+label{
+font-size:13px;
+font-weight:700;
+color:#46506a;
+}
+h1{
+font-size:29px;
+letter-spacing:-.8px;
+}
+h3{font-size:18px}
+.sub{
+color:#8992a8;
+font-size:13px;
+}
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:17px;
+margin:28px 0;
+}
+.card,.panel{
+background:white;
+padding:23px;
+border-radius:17px;
+margin-bottom:18px;
+box-shadow:0 5px 22px rgba(30,45,85,.045);
+border:1px solid #edf0f7;
+}
+.card p{
+color:#8992a8;
+font-size:13px;
+font-weight:600;
+}
+.card strong{
+font-size:27px;
+color:#202b49;
+}
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:12px;
+}
+table{
+width:100%;
+border-collapse:collapse;
+min-width:600px;
+}
+th,td{
+text-align:left;
+padding:16px 10px;
+border-bottom:1px solid #edf0f5;
+font-size:12px;
+}
+th{
+color:#8992a8;
+font-weight:700;
+}
+td{color:#39445e}
 .wrap{overflow-x:auto}
 .hidden{display:none}
-.status{font-size:11px;padding:6px 9px;border-radius:15px;background:#fff2d9;color:#a66a00}
-.paid{background:#e5f8ed;color:#21834b}
-.late{background:#ffe9e9;color:#c44}
-#message,#appMessage{font-size:13px;color:#6555df}
-@media(max-width:600px){main{margin:20px auto}.card{padding:14px}}
+.status{
+font-size:11px;
+padding:7px 11px;
+border-radius:20px;
+background:#fff2d9;
+color:#a66a00;
+font-weight:700;
+}
+.paid{
+background:#e5f8ed;
+color:#21834b;
+}
+.late{
+background:#ffe9e9;
+color:#c44;
+}
+#message,#appMessage{
+font-size:13px;
+color:#6555df;
+}
+@media(max-width:600px){
+main{margin:22px auto}
+.card,.panel{padding:17px}
+h1{font-size:24px}
+header{padding:17px 5%}
+.logo{font-size:21px}
+}
 </style>
 </head>
 <body>
