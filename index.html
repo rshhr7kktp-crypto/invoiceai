@@ -207,6 +207,70 @@ display:flex;align-items:center;justify-content:center;font-weight:800;margin-bo
 .form-grid{grid-template-columns:1fr}
 .search{max-width:none}
 }
+@media(max-width:650px){
+/* Nouveau design mobile des factures */
+#invoicesPage .table-wrap{
+overflow:visible;
+}
+
+#invoicesPage table{
+width:100%;
+min-width:0;
+}
+
+#invoicesPage thead{
+display:none;
+}
+
+#invoicesPage tbody tr{
+display:block;
+background:#fafaff;
+border:1px solid #edf0f7;
+border-radius:14px;
+padding:10px;
+margin-bottom:14px;
+}
+
+#invoicesPage tbody td{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+padding:10px 4px;
+border-bottom:1px solid #edf0f7;
+font-size:13px;
+}
+
+#invoicesPage tbody td:nth-child(1)::before{content:"N° facture"}
+#invoicesPage tbody td:nth-child(2)::before{content:"Client"}
+#invoicesPage tbody td:nth-child(3)::before{content:"Montant"}
+#invoicesPage tbody td:nth-child(4)::before{content:"Échéance"}
+#invoicesPage tbody td:nth-child(5)::before{content:"Statut"}
+
+#invoicesPage tbody td::before{
+color:#9299ad;
+font-size:12px;
+font-weight:700;
+}
+
+#invoicesPage tbody td:last-child{
+display:flex;
+flex-wrap:wrap;
+gap:7px;
+border-bottom:0;
+}
+
+#invoicesPage tbody td:last-child::before{
+content:"Actions";
+width:100%;
+}
+
+#invoicesPage tbody td:last-child button{
+flex:1;
+padding:10px 8px;
+font-size:12px;
+}
+}
 </style>
 </head>
 <body>
