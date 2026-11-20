@@ -231,15 +231,19 @@ $("cancel").onclick=()=>$("formPanel").classList.add("hidden");
 $("add").onclick=addInvoice;
 $("search").oninput=render;
 
-db.auth.getSession().then(({data})=>{
-if(data.session)enterApp();
-});
-db.auth.onAuthStateChange((event)=>{
+db.auth.onAuthStateChange((event, session)=>{
+if(session && (event==="SIGNED_IN" || event==="INITIAL_SESSION")){
+enterApp();
+}
 if(event==="SIGNED_OUT"){
 $("app").classList.add("hidden");
 $("auth").classList.remove("hidden");
 $("logout").classList.add("hidden");
 }
+});
+
+db.auth.getSession().then(({data})=>{
+if(data.session)enterApp();
 });
 </script>
 </body>
